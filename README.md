@@ -122,5 +122,48 @@ typora-copy-images-to: ./img
   </html>
   ```
 
-  ​
+  mac : option command i  개발자 도구 띄우기
 
+- 리엑티비티 : 데이터의 변화에 따라 화면이 바로바로 바뀌는 것.
+
+- new Vue 를 인스턴스라고 한다.
+
+
+
+
+## 뷰 인스턴스
+
+- 필수로 생성해야 하는 단위이다. 
+
+- el 이 꼭 있어야 뷰를 실행할 수 있다. 이게 있어야 div 안쪽의 태그의 모든 것들이 유효하다고 한다.
+
+- ```Html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app"></div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          var vm = new Vue({
+              // el이 있어야 뷰가 동작을 할 수 있다.
+              el:'#app',
+              data: {
+                  message:'hi'
+              }
+          });
+      </script>
+      
+  </body>
+  </html>
+  ```
+
+- 생성자 함수 사용 설명서. 
+
+- 인스턴스 재사용이 가능하게 된다. 쉽고 빠르고 좋다.
