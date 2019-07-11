@@ -235,12 +235,14 @@ typora-copy-images-to: ./img
   </head>
   <body>
       <div id="app">
+          // 컴포넌트 등록하는 곳.
           <app-header></app-header>
           <app-content></app-content>
       </div>
   
       <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
       <script>
+          // 전역 컴포턴트 - 쓸일 거의 없음. 하지만 구조상 쉽게 등록하는 방법을 배움
           Vue.component('app-header',{
               template:'<h1>Header</h1>'
           });
@@ -254,7 +256,329 @@ typora-copy-images-to: ./img
       </script>
   
   </body>
+</html>
+  ```
+  
+- 지역 컴포넌트 등록 방법
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <app-header></app-header>
+          <app-content></app-content>
+          <app-footer></app-footer>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          Vue.component('app-header',{
+              template:'<h1>Header</h1>'
+          });
+          Vue.component('app-content',{
+              template:'<p>content</p>'
+          });
+          // 인스턴스를 생성하면 기본적으로 root 컴포넌트가 된다.
+          new Vue({
+              el: '#app',
+              // 지역 컴포넌트를 등록해보자.
+              components:{
+                  //'키' : '밸류' 형태로 존재
+                  // '컴포넌트 이름' : '컴포넌트 내용'
+                  'app-footer':{
+                      template:'<footer>this is footer</footer>'
+                  }
+              }
+          });
+      </script>
+  
+  </body>
   </html>
   ```
 
-- 
+- 왜 지역과 전역을 나눴고, 서비스별 특징에 대해 배워보자.
+
+  - 전역으로 사용되는 라이브러리 형태, 플러그인에는 전역을 등록
+  - 지역 컴포넌트는 실제 등록되는 서비스들의 요소가 들어가게 된다. 일반적으로는 지역을 사용한다.
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <app-header></app-header>
+          <app-content></app-content>
+          <app-footer></app-footer>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          // 전역 컴포넌트를 등록해보았음. 
+          Vue.component('app-header',{
+              template:'<h1>Header</h1>'
+          });
+          Vue.component('app-content',{
+              template:'<p>content</p>'
+          });
+          // 인스턴스를 생성하면 기본적으로 root 컴포넌트가 된다.
+          new Vue({
+              el: '#app',
+              // 지역 컴포넌트를 등록해보자.
+              // 여러개가 들어가는 속성이기 때문에 s가 붙는다.
+              components:{
+                  //'키' : '밸류' 형태로 존재
+                  // '컴포넌트 이름' : '컴포넌트 내용'
+                  'app-footer':{
+                      template:'<footer>this is footer</footer>'
+                  }
+              },
+              // 이것도 s를 붙여준다.
+              methods:{
+  
+              }
+          });
+      </script>
+  
+  </body>
+  </html>
+  ```
+
+- 컴포넌트와 인스턴스간의 관계
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <app-header></app-header>
+          <app-footer></app-footer>
+      </div>
+      <div id="app2">
+          <app-header></app-header>
+          <app-footer></app-footer>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          Vue.component('app-header',{
+              template:'<h1>Header</h1>'
+          });
+          new Vue({
+              el: '#app',
+              components:{
+                  'app-footer':{
+                      template:'<footer>this is footer</footer>'
+                  }
+              },
+              methods:{
+              }
+          });
+          new Vue({
+              // 지역 컴포넌트에 footer가 등록되어있지 않기 때문에 error 가 발생한다!
+              el:'#app2'
+          });
+      </script>
+  
+  </body>
+  </html>
+  ```
+
+  전역은 모든 인스턴스에 등록이 되어있다. 
+
+  지역은 인스턴스마다 새로 생성을 해주어야 한다. 그래서 footer에서는 에러가 발생함을 볼 수 있다. 
+
+  ![1562820995987](img/1562820995987.png)
+
+  > 다음과 같이 footer가 나오지 않는 것을 볼 수 있다.
+  >
+  > 전역 컴포턴트와 달리 지역 컴포턴트는 모든 인스턴스에 등록되어있지 않다.
+
+  ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <app-header></app-header>
+          <app-footer></app-footer>
+      </div>
+      <div id="app2">
+          <app-header></app-header>
+          <app-footer></app-footer>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          // 전역 컴포넌트를 등록해보았음. 
+          Vue.component('app-header',{
+              template:'<h1>Header</h1>'
+          });
+    
+          // 인스턴스를 생성하면 기본적으로 root 컴포넌트가 된다.
+          new Vue({
+              el: '#app',
+              // 지역 컴포넌트를 등록해보자.
+              // 여러개가 들어가는 속성이기 때문에 s가 붙는다.
+              components:{
+                  //'키' : '밸류' 형태로 존재
+                  // '컴포넌트 이름' : '컴포넌트 내용'
+                  'app-footer':{
+                      template:'<footer>this is footer</footer>'
+                  }
+              },
+              // 이것도 s를 붙여준다.
+              methods:{
+  
+              }
+          });
+  
+          new Vue({
+              el:'#app2',
+              components:{
+                  // 이렇게 생성할때마다 컴포넌트를 등록해줘야 한다.
+                  'app-footer':{
+                      template:'<footer>this is footer</footer>'
+                  }
+              }
+          });
+      </script>
+  
+  </body>
+  </html>
+  ```
+
+- 컴포넌트의 통신방식
+
+  - 컴포넌트를 등록하면 서로 관계가 생긴다.
+  - 관계에 대한 규칙이 존재한다.
+  - 뷰 컴포넌트는 각각 고유한 데이터 유효범위를 갖는다. <u>프롭스와 이벤트</u>
+  - ![props-events](img/props-events.png)
+
+- 컴포넌트 통신 규칙이 필요한 이유
+
+  - 컴포턴트 통신 데이터 통신간 방향 규칙이 없다.
+  - 이를 규칙화 해주는 것이 프롭스와 이벤트이다.
+  - 데이터의 흐름을 추적할 수 있다. 
+  - 아래에서 위로 이벤트가 올라가고 위에서 아래로 프롭스가 내려간다.
+
+- 프롭스 기초
+
+```html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <!--props 문법-->
+            <!-- <app-header v-bind:프롭스 속성 이름="상위 컴포넌트의 데이터 이름"></app-header> -->
+            <app-header v-bind:propsdata="message"></app-header>
+            <app-header></app-header>
+        </div>
+    
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    
+        <script>
+            var appHeader = {
+                template:'<h1>header</h1>',
+                props:['propsdata']
+            }
+            new Vue({
+                el:'#app',
+                components:{
+                    'app-header':appHeader
+                },
+                data:{
+                    message:'hi'
+                }
+            })
+        </script>
+    </body>
+    </html>
+```
+
+- 프롭스 속성의 특징
+
+  - 리엑티비티가 프롭스에도 반영이 된다. 위에서 내용을 고치면 자식계층에서도 고쳐진다.
+
+  - 프롭스 실습
+
+  - 전달된 값이 바로 반영되는 것을 리엑티비티라고 한다.
+
+  - ```html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <!--props 문법-->
+            <!-- <app-header v-bind:프롭스 속성 이름="상위 컴포넌트의 데이터 이름"></app-header> -->
+            <app-header v-bind:propsdata="message"></app-header>
+            <!--2. 내려온데이터는 어떤 변수를 가져올 것인가??-->
+            <app-content v-bind:propsdata="number"></app-content>
+        </div>
+    
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    
+        <script>
+            var appHeader = {
+                //{{이걸 데이터 바인딩이라고 한다.}}
+                template:'<h1>{{ propsdata }}</h1>',
+                props:['propsdata']
+            }
+            var appContent = {
+                template:"<h1>{{propsdata}}</h1>",
+                // 1. 여기에다 변수를 먼저 등록한다.
+                props:['propsdata']
+            }
+            new Vue({
+                el:'#app',
+                components:{
+                    'app-header':appHeader,
+                    'app-content':appContent
+                },
+                data:{
+                    message:'hi',
+                    number:10
+                }
+            })
+        </script>
+    </body>
+    </html>
+    ```
+
+- 이벤트 emit
+
