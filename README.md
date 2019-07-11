@@ -689,4 +689,359 @@
   </html>
   ```
 
+- 뷰 라우터 설치하기
 
+  - Script:src 하고 탭 누르면 \<script src="">\</script> 나온다.. 대박
+
+  - ```Html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <app id="div"></app>
+
+        <!-- 순서도 중요하다.. 먼저 뷰를 띄워놓고 그 다음줄에 라우터 띄워놓는다. -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+        <script>
+            new VueRouter({
+                
+            });
+            new Vue({
+                el:'#app'
+            })
+        </script>
+    </body>
+    </html>
+    ```
+
+- ![스크린샷 2019-07-11 오후 10.07.57](../스크린샷 2019-07-11 오후 10.07.57.png)
+
+  이렇게 $route 가 생긴다!
+
+- ```Html
+  <body>
+      <div id="app"></div>
+
+      <!-- 순서도 중요하다.. 먼저 뷰를 띄워놓고 그 다음줄에 라우터 띄워놓는다. -->
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+      <script>
+          // 객체로 뺄 수 있다. 이걸 루트 컴포넌트에 저장시켜놓는다.
+          var rt = new VueRouter({
+
+          });
+          new Vue({
+              el:'#app',
+              // 여기임!
+              router: rt
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+
+
+
+- routes 속성에는 path, component 두개가 있다. 이걸 작성해줘야 함.
+- path는 페이지 이름, component는 해당 url 에서 표시될 컴포넌트를 나타낸다.
+
+```Html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+
+    <!-- 순서도 중요하다.. 먼저 뷰를 띄워놓고 그 다음줄에 라우터 띄워놓는다. -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script>
+        // 여기에 해당 컴포넌트를 간략하게 작성!
+        var LoginComponent={
+            template:'<div>this is login </div>'
+        }
+        var MainComponent={
+            template:'<div>this is main</div>'
+        }
+
+        // 객체로 뺄 수 있다. 이걸 루트 컴포넌트에 저장시켜놓는다.
+        var rt = new VueRouter({
+            // routes라는 속성 : page 에 라우팅 정보가 들어간다. 보통 배열로 담긴다.
+            routes:[
+                {
+                    //페이지의 Url 이름
+                    path:'/login',
+                    //해당 Url에서 표시될 컴포넌트
+                    component: LoginComponent
+                },
+                {
+                    //페이지 Url 이름
+                    path:'/main',
+                    //해당 Url에서 표시되는 컴포넌트
+                    component: MainComponent
+                }
+            ]
+        });
+        new Vue({
+            el:'#app',
+            // 여기임!
+            router: rt
+        })
+    </script>
+</body>
+</html>
+```
+
+- 라우터 뷰는 뭐하는걸까?
+
+  - ![스크린샷 2019-07-11 오후 10.24.41](img/스크린샷 2019-07-11 오후 10.24.41.png)
+
+  - > 라우터 연결이 안되어있다면 이런 에러를 뿜을 수 있으니 조심하자!!
+
+  - ![스크린샷 2019-07-11 오후 10.29.23](img/스크린샷 2019-07-11 오후 10.29.23.png)
+
+  - ```Html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+          	<!-- 화면에 따라 다르게 보이는 것 -->
+            <router-view></router-view>
+        </div>
+
+        <!-- 순서도 중요하다.. 먼저 뷰를 띄워놓고 그 다음줄에 라우터 띄워놓는다. -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+        <script>
+            // 여기에 해당 컴포넌트를 간략하게 작성!
+            var LoginComponent={
+                template:'<div>this is login </div>'
+            }
+            var MainComponent={
+                template:'<div>this is main</div>'
+            }
+
+            // 객체로 뺄 수 있다. 이걸 루트 컴포넌트에 저장시켜놓는다.
+            var rt = new VueRouter({
+                // routes라는 속성 : page 에 라우팅 정보가 들어간다. 보통 배열로 담긴다.
+                routes:[
+                    {
+                        //페이지의 Url 이름
+                        path:'/login',
+                        //해당 Url에서 표시될 컴포넌트
+                        component: LoginComponent
+                    },
+                    {
+                        //페이지 Url 이름
+                        path:'/main',
+                        //해당 Url에서 표시되는 컴포넌트
+                        component: MainComponent
+                    }
+                ]
+            });
+            new Vue({
+                el:'#app',
+                // 여기임!
+                router: rt
+            })
+        </script>
+    </body>
+    </html>
+    ```
+
+
+
+- Router-link*2 하고 탭 누르면 
+
+- ```html
+         <router-link></router-link>
+         <router-link></router-link>
+     ```
+  ```
+
+  이렇게 두개 생긴다. 짱신기
+
+- Router-link 페이지 이동을 하기위한 링크
+
+- ```Html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <router-link to="/login">login</router-link>
+          <router-link to="/main">main</router-link>
+          <router-view></router-view>
+      </div>
+
+      <!-- 순서도 중요하다.. 먼저 뷰를 띄워놓고 그 다음줄에 라우터 띄워놓는다. -->
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+      <script>
+          // 여기에 해당 컴포넌트를 간략하게 작성!
+          var LoginComponent={
+              template:'<div>this is login </div>'
+          }
+          var MainComponent={
+              template:'<div>this is main</div>'
+          }
+
+          // 객체로 뺄 수 있다. 이걸 루트 컴포넌트에 저장시켜놓는다.
+          var rt = new VueRouter({
+              mode:'history',
+              // routes라는 속성 : page 에 라우팅 정보가 들어간다. 보통 배열로 담긴다.
+              routes:[
+                  {
+                      //페이지의 Url 이름
+                      path:'/login',
+                      name : 'login',  // 넣는건 선택사항이다.
+                      //해당 Url에서 표시될 컴포넌트
+                      component: LoginComponent
+                  },
+                  {
+                      //페이지 Url 이름
+                      path:'/main',
+                      //해당 Url에서 표시되는 컴포넌트
+                      component: MainComponent
+                  }
+              ]
+          });
+          new Vue({
+              el:'#app',
+              // 여기임!
+              router: rt
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+- 라우터란무엇일까? 복습
+
+  - 페이지를 이동할 때 사용하는 공식 라이브러리 기능
+  - 라우터 **등록**을 공부해보았음!! 객체로 빼서 root에 저장해놓기.
+  - 라우터 옵션이란?  —— **routes**
+    - Routes : 페이지에 정보들이 들어가는 속성이다. -page , component 가 있다. 
+    - component는 하나이기 때문에 s가 붙지 않는다.
+    - vs 인스턴스는 여러개가 붙기때문에 components 로 작성한다.
+  - Mode:'history'를 넣게 되면 주소에 #가 없어지면서 조금 더 깔끔한 코드가 된다.
+  - Router-view : 컴포넌트가 뿌려지는 영역이다. 
+  - router-link : 페이지를 이동할 Url 이다.
+  - Router-navigation-guard가 있다. ~~일단 이정도만 알아놓고 나중에 고급강좌에 있겠지 뭐~~
+
+- 엑시오스는 뭘까?
+
+  - 통신 라이브러리라고 한다.
+  - 에이작스 ajax 비동기 웹 에플리캐이션의 제작
+  - 프로미스 기반의 통신 라이브러리라고 한다. 문서화 잘되어있고 api 활용 할 수 있다.
+
+- 오픈소스 활용법
+
+  - 스타 수를 확인하자
+  - 커밋과 컨트리뷰트 수를 보는게 좋다.
+
+- 프로미스? 
+
+  - 자바스크립트 비동기처리 패턴이라고 함.
+  - 콜백  - 프로미스 - 프로미스 + 제너레이터 - 어싱크,어웨잇
+
+- 엑시오스 돌려보기
+
+  - 엑시오스 cdn 링크 : \<script src="https://unpkg.com/axios/dist/axios.min.js">\</script>
+
+  - ```Html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Axios</title>
+    </head>
+    <body>
+      <div id="app">
+        <button v-on:click="getData">get user</button>
+        <div>
+          {{ users }}
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+      <script>
+        new Vue({
+          el: '#app',
+          data: {
+            users: []
+          },
+          methods: {
+            getData: function() { 
+              var vm = this;
+              axios.get('https://jsonplaceholder.typicode.com/users/')
+                .then(function(response) {
+                  console.log(response.data);
+                  vm.users = response.data;
+                })
+                .catch(function(error) {
+                  console.log(error);
+                });
+            }
+          }
+        })
+      </script>
+    </body>
+    </html>
+    ```
+
+- 어떤식으로 데이터가 이동하고 움직이는지 데이터 네트워크 패널에 대해 알아보자.
+
+- 웹 서비스에서의 클라이언트와 서버간의 http 통신 구조에 대해 알아보자
+
+- ![스크린샷 2019-07-11 오후 11.19.06](img/스크린샷 2019-07-11 오후 11.19.06.png)
+
+- 브라우져와 서버간의 통신 방법
+
+![스크린샷 2019-07-11 오후 11.24.03](img/스크린샷 2019-07-11 오후 11.24.03.png)
+
+
+
+- 크롬 개발자 도구 네트워크 패널 보는 방법
+  - 네트워크 패널을 잘 보는게 중요하다.
+  - XHR을 보면 네트워크 패널을 볼 수 있다.
+  - [프런트엔드 개발자가 알아야 하는 HTTP 프로토콜](https://joshua1988.github.io/web-development/http-part1/)
+  - [구글 크롬 개발자 도구 공식 문서](https://developers.google.com/web/tools/chrome-devtools/)
+
+## 템플릿 기본
+
+### - 템플릿 문법 소개
+
+- 뷰로 화면을 조작하는 방법 - 데이터 바인딩, 디렉티브
+  - 데이터바인딩 : {{ }}
+  - 디렉티브 : v- 어쩌고 저쩌고 붙는걸 디렉티브라고 한다.
+
+### - 데이터바인딩과 computed 속성
+
+- ​
