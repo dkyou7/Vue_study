@@ -38,7 +38,7 @@ typora-copy-images-to: ./img
 
 ## 2. 뷰는 무엇인가?
 
-- ![스크린샷 2019-07-10 오후 11.56.29](img/스크린샷 2019-07-10 오후 11.56.29.png)
+- ![스크린샷 2019-07-10 오후 11.56.29](img/img1.png)
 
 - ! 치고 탭 누르면 html 자동으로 만들어진다.
 
@@ -167,3 +167,94 @@ typora-copy-images-to: ./img
 - 생성자 함수 사용 설명서. 
 
 - 인스턴스 재사용이 가능하게 된다. 쉽고 빠르고 좋다.
+
+- ```html
+  new Vue({
+  	el: ,
+  	template: ,
+  	data: ,
+  	methods: ,
+  	...
+  }
+  ```
+
+- ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app"></div>
+      <script>
+          // 객체를 통째로 넣어주는 것이 가독성이 좋다.
+          // 객체 표기법으로 넣어주자.
+          var vm = new Vue({
+              el:'#app',
+              data:{
+                  message:'hi'
+              },
+              methods:{
+  
+              },
+              created:{
+  
+              }
+          });
+      </script>
+  </body>
+  </html>
+  ```
+
+## 뷰 컴포넌트 
+
+- 거의 다 컴포넌트 기반으로 코딩하고 있다.
+
+- 영역별로 코드로 구분해서 관리한다. 
+
+  - 재사용성 증가
+  - 코드의 반복 줄이기.
+
+- 컴포넌트간의 관계가 생긴다.
+
+- ![component](img/component.png)
+
+- 컴포넌트를 등록할 수 있다.
+
+- ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <app-header></app-header>
+          <app-content></app-content>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          Vue.component('app-header',{
+              template:'<h1>Header</h1>'
+          });
+          Vue.component('app-content',{
+              template:'<p>content</p>'
+          });
+          // 인스턴스를 생성하면 기본적으로 root 컴포넌트가 된다.
+          new Vue({
+              el: '#app'
+          });
+      </script>
+  
+  </body>
+  </html>
+  ```
+
+- 
