@@ -582,3 +582,221 @@ typora-copy-images-to: ./img
 
 - 이벤트 emit
 
+  - 아래에서 위로 정보 요청 신호를 보낼 때 쓴다.
+
+  - ```html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <app-header></app-header>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script>
+            var appHeader = {
+                // 이벤트 v-on:click="" 으로 정의하자.
+                template:'<button v-on:click="passEvent">click Me</button>',
+                methods:{
+                    // 버튼을 클릭했을 때 발생하는 이벤트
+                    passEvent: function(){
+                        this.$emit('pass');
+                    }
+                }
+            };
+            new Vue({
+                el:'#app',
+                components:{
+                    'app-header':appHeader
+                }
+            });
+        </script>
+    </body>
+    </html>
+    ```
+
+    
+
+    ![emit-event](img/emit-event.PNG)
+
+    클릭하면 이벤트가 발생한다. 이제 이걸 어떻게 활용할지 살펴보겠다.
+
+- ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <!-- <app-header v-on:하위 컴포넌트에서 발생한 이벤트 이름="상위 컴포넌트의 메서드 이름"></app-header> -->
+          <app-header v-on:pass="logText"></app-header>
+          <!-- 2. 상위 컴포턴트 호출 -->
+          <app-content v-on:add_num="plusOne"></app-content>
+          <!-- 4. 반영된거 뿌려주기 -->
+          <p>{{num}}</p>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          var appHeader = {
+              // 이벤트 v-on:click="" 으로 정의하자.
+              template:'<button v-on:click="passEvent">click Me</button>',
+              methods:{
+                  passEvent: function(){
+                      this.$emit('pass');
+                  }
+              }
+          };
+          var appContent={
+              template:'<button v-on:click="addNumber">add</button>',
+              methods:{
+                  addNumber:function(){
+                      //1. 새로운 사실 발견..! 함수를 카멜 표기법으로 하는것을 지원하지 않는다.
+                      // $emit 하위에서 상위로 이벤트 발생 요청!
+                      this.$emit('add_num');
+                      // this.$emit('addNum');
+                  }
+              }
+          };
+          new Vue({
+              el:'#app',
+              components:{
+                  'app-header':appHeader,
+                  'app-content':appContent
+              },
+              methods:{
+                  logText:function(){
+                      console.log('hi');
+                  },
+                  // 3. 함수 실행
+                  plusOne:function(){
+                     this.num++;
+                  }
+              },
+              data:{
+                  num:10
+              }
+          });
+      </script>
+  </body>
+  </html>
+  ```
+
+- 같은 컴포넌트 레밸 간의 통신 방법
+
+- ![통신](img/통신1.PNG)
+
+- 일단 emit으로 올린다.
+
+- ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <app-header></app-header>
+          <app-content></app-content>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          var appHeader={
+              template:'<div>header</div>'
+          }
+          var appContent={
+              template:'<div>content<button v-on:click="passNum">pass</button></div>',
+              methods:{
+                  passNum:function(){
+                      this.$emit('pass',10);
+                  }
+              }
+          }
+          new Vue({
+              el:'#app',
+              components:{
+                  'app-header':appHeader,
+                  'app-content':appContent
+              },
+              data:{
+                  num: 0
+              }
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+- props로 내린다.
+
+  - 이벤트가 잘 발생되었는지 확인한다.
+  - 속성 잘 바뀌었나.
+  - props 잘 넘어갔는지 확인한다.
+
+- ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <!-- 여기서 데이터를 props로 받는다 -->
+          <app-header v-bind:propsdata="num"></app-header>
+          <!-- 여기로 넘겨준다. -->
+          <app-content v-on:pass="deliverNum"></app-content>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          var appHeader={
+              template:'<div>header</div>',
+              //props로 받는다.
+              props:['propsdata']
+          }
+          var appContent={
+              template:'<div>content<button v-on:click="passNum">pass</button></div>',
+              methods:{
+                  passNum:function(){
+                      // 올려준다.
+                      this.$emit('pass',10);
+                  }
+              }
+          }
+          new Vue({
+              el:'#app',
+              components:{
+                  'app-header':appHeader,
+                  'app-content':appContent
+              },
+              data:{
+                  num: 0
+              },
+              methods:{
+                  // 받아온 메서드를 바꿔준다.
+                  deliverNum:function(value){
+                      this.num=value;
+                  }
+              }
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+  
