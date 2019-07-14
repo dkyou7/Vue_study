@@ -1044,4 +1044,76 @@
 
 ### - 데이터바인딩과 computed 속성
 
+- ```Html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <!-- 기본적인 데이터 바인딩 콧수염-->
+          {{message}}
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          new Vue({
+              el:'#app',
+              data:{
+                  message:'hi'
+              }
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+  - computed : 스타일리시한 값 만들기
+
+- ```Html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <!-- 기본적인 데이터 바인딩 -->
+            {{message}}
+
+            <!-- 스타일리시한 데이터 바인딩 -->
+            {{num}}
+            {{doubleNum}}
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script>
+            new Vue({
+                el:'#app',
+                data:{
+                    message:'hi',
+                    num:10,
+                    
+                    // doubleNum:10*2
+                },
+                // 이미 알고 있는 값을 이용해서 값을 변경하고자 할 때 computed 속성을 쓴다고 한다.
+                computed:{
+                    doubleNum:function(){
+                        return this.num*2;
+                    }
+                }
+            })
+        </script>
+    </body>
+    </html>
+    ```
+
+### - 뷰 디렉티브와 뷰 바인딩
+
 - ​
+
