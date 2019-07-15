@@ -878,7 +878,8 @@
   ```
 
   이렇게 두개 생긴다. 짱신기
-```
+  ```
+```html
      
 - Router-link 페이지 이동을 하기위한 링크
 
@@ -938,7 +939,7 @@
       </script>
   </body>
   </html>
-  ```
+```
 
 - 라우터란무엇일까? 복습
 
@@ -1123,7 +1124,183 @@
     </html>
     ```
 
-### - 뷰 디렉티브와 뷰 바인딩
+## - 뷰 디렉티브와 뷰 바인딩
 
 - 
+
+
+
+## - method 속성과 v-on 디렉티브를 이용한 키보드 및 마우스 이벤트 처리
+
+- ```html
+  ...
+  <body>
+      <div id="app">
+          <button v-on:click='logText'>click me</button>
+          <!-- 키에서 입력 누르고 떼면서 이벤트 발생 -->
+          <input type="text" v-on:keyup="logText">
+          <!-- 엔터키를 누르면 이벤트 발생 -->
+          <input type="text" v-on:keyup.enter="logText2">
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          new Vue({
+              el:'#app',
+              methods:{
+                  logText:function(){
+                      console.log('clicked')
+                  
+                  },
+                  logText2:function(){
+                      console.log('clicked2')
+                  }
+              },
+              data:{
+                  show:false
+              }
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+
+
+## - watch 속성
+
+- 데이터의 변화에 따라 특정 로직을 실행할 수 있는 속성.
+
+- ```html
+  ...
+  <body>
+      <div id="app">
+          {{num}}
+          <button v-on:click="addNum">click me</button>
+          <p v-if="show">클릭 10회 초과함</p>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          new Vue({
+              el:'#app',
+              data:{
+                  num:10,
+                  show:false
+              },
+              watch:{
+                  num:function(){
+                      this.logText();
+                      this.check();
+                  }
+              },
+              methods:{
+                  addNum:function(){
+                      this.num++;
+                  },
+                  logText:function(){
+                      console.log('changed');
+                  },
+                  check:function(){
+                      if(this.num>20){
+                          this.show=true;
+                      }
+                  }
+              }
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+
+
+## - computed vs methods 차이점
+
+- computed : 단순한 값에 대한 계산
+
+- watched : 한번 실행하기에 무거운 로직들. 데이터 요청에 적합하다.
+
+
+
+## - computed 속성을 이용한 클래스 코드 작성
+
+- ```html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+      <style>
+          .warning{
+              color:red;
+          }
+      </style>
+  </head>
+  <body>
+      <div id="app">
+          <p v-bind:class="errorTextColor">hello</p>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          new Vue({
+              el:'#app',
+              data:{
+                  isError:false
+              },
+              computed:{
+                  errorTextColor:function(){
+                      return this.isError ? 'warning' : null;
+                  }
+              }
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+
+
+## - vue-cli 소개
+
+- 명령어 보조도구, 실행도구.
+
+  `bash`
+
+- ```bash
+  node -v 
+  npm -v
+  npm install -g @vue/cli
+  ```
+
+- 에러가 났다면?  permission error 일 가능성이 크다. 권한이 없기 때문에 나는 에러이다.
+
+  - 앞에 `sudo`를 붙여주자.
+
+  `vue-cli 2.x version`
+
+- ```bash
+  vue init 'webpack-simple' '프로젝트 폴더 위치'
+  ```
+
+  `vue-cli 3.x version`
+
+- ```bash
+  vue create '프로젝트 폴더 위치'
+  ```
+
+
+
+## - 프로젝트 생성
+
+`bash`
+
+```bash
+vue create 'vue-cli'
+cd vue-cli
+npm run serve
+```
 
