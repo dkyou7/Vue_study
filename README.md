@@ -1124,11 +1124,189 @@
     </html>
     ```
 
-## - 뷰 디렉티브와 뷰 바인딩
 
-- 
+- ​
+
+- ​
+
+- ​
+
+### - 뷰 디렉티브와 뷰 바인딩, 클래스 바인딩
+
+- dom에 관한 정보까지 다 바꾸어주는 리엑티비티 성능!! 짱이다.
+
+- ```Html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <!-- 기본적인 데이터 바인딩 -->
+          {{message}}
+
+          <!-- 스타일리시한 데이터 바인딩 -->
+          <div v-bind:id="uuid" v-bind:class="className">{{num}}</div>
+          {{doubleNum}}
+  ```
 
 
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          new Vue({
+              el:'#app',
+              data:{
+                  message:'hi',
+                  num:10,
+                  uuid:'abc1234',
+                  className:'name-blue'
+                  // doubleNum:10*2
+              },
+              // 이미 알고 있는 값을 이용해서 값을 변경하고자 할 때 computed 속성을 쓴다고 한다.
+              computed:{
+                  doubleNum:function(){
+                      return this.num*2;
+                  }
+              }
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+### - v-if, v-show
+
+- v-if는 아예 div태그가 삭제가 되고 v-show는 css상 display:none 상태가 되어 공간을 차지하게 된다.
+
+- ```Html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Document</title>
+  </head>
+  <body>
+      <div id="app">
+          <div v-if="isLogin"> 
+              test user has been login!
+          </div>
+          <!-- 아예 삭제가 된다 -->
+          <div v-else>
+              login plz...
+          </div>
+          <!-- display:none 적용된다. -->
+          <div v-show="isLogin">
+              test
+          </div>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script>
+          new Vue({
+              el:'#app',
+              data:{
+                  isLogin:false
+              }
+          })
+      </script>
+  </body>
+  </html>
+  ```
+
+### - 모르는 문법이 나왔을 때 공식 문서를 보고 해결하는 방법
+
+- ​
+  - dom에 관한 정보까지 다 바꾸어주는 리엑티비티 성능!! 짱이다.
+
+  - ```Html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <!-- 기본적인 데이터 바인딩 -->
+            {{message}}
+
+            <!-- 스타일리시한 데이터 바인딩 -->
+            <div v-bind:id="uuid" v-bind:class="className">{{num}}</div>
+            {{doubleNum}}
+    ```
+
+
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script>
+            new Vue({
+                el:'#app',
+                data:{
+                    message:'hi',
+                    num:10,
+                    uuid:'abc1234',
+                    className:'name-blue'
+                    // doubleNum:10*2
+                },
+                // 이미 알고 있는 값을 이용해서 값을 변경하고자 할 때 computed 속성을 쓴다고 한다.
+                computed:{
+                    doubleNum:function(){
+                        return this.num*2;
+                    }
+                }
+            })
+        </script>
+    </body>
+    </html>
+    ​```
+
+  ### - v-if, v-show
+
+  - v-if는 아예 div태그가 삭제가 되고 v-show는 css상 display:none 상태가 되어 공간을 차지하게 된다.
+
+  - ```Html
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="app">
+            <div v-if="isLogin"> 
+                test user has been login!
+            </div>
+            <!-- 아예 삭제가 된다 -->
+            <div v-else>
+                login plz...
+            </div>
+            <!-- display:none 적용된다. -->
+            <div v-show="isLogin">
+                test
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script>
+            new Vue({
+                el:'#app',
+                data:{
+                    isLogin:false
+                }
+            })
+        </script>
+    </body>
+    </html>
+    ```
 
 ## - method 속성과 v-on 디렉티브를 이용한 키보드 및 마우스 이벤트 처리
 
@@ -1142,7 +1320,7 @@
           <!-- 엔터키를 누르면 이벤트 발생 -->
           <input type="text" v-on:keyup.enter="logText2">
       </div>
-  
+
       <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
       <script>
           new Vue({
@@ -1179,7 +1357,7 @@
           <button v-on:click="addNum">click me</button>
           <p v-if="show">클릭 10회 초과함</p>
       </div>
-  
+
       <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
       <script>
           new Vue({
@@ -1243,7 +1421,7 @@
       <div id="app">
           <p v-bind:class="errorTextColor">hello</p>
       </div>
-  
+
       <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
       <script>
           new Vue({
@@ -1304,3 +1482,432 @@ cd vue-cli
 npm run serve
 ```
 
+서버가 쉽게 만들어졌다… 갓갓
+
+
+
+
+
+## - 폴더 구조 확인 및 main.js 설명
+
+`render`함수 : 뷰 내부적으로 사용하는 함수. 사용자들도 사용할 수 있는 함수. 
+
+`main.js`
+
+```Js
+import Vue from 'vue'
+import App from './App.vue'
+
+Vue.config.productionTip = false
+
+new Vue({
+  render: h => h(App),
+  // 동일한 역할 수행한다.
+  // components:{
+  //   'app':App
+  // }
+}).$mount('#app')
+
+```
+
+
+
+## - 싱글파일 컴포넌트 및 지금까지 배운거 적용하는 방법
+
+- scf 텝 누르면 scaffold 스켈레톤 코드가 짜여지게 된다. 
+
+- ```Vue
+  <template>
+      <!-- html -->
+      <div>header</div>
+  </template>
+
+  <script>
+  export default {
+      // javascript - 인스턴스 옵션
+  }
+  </script>
+
+  <style>
+  /* css */
+  </style>
+
+  ```
+
+
+
+## - 스켈레톤 진화시키기
+
+파스칼 케이스
+
+컴포넌트의 내용을 들고와서 컴포넌트에서 사용한다.
+
+```Vue
+<template>
+  <!-- html 엘리먼트는 하나만 존재해야한다. -->
+  <div>
+    {{str}}
+  </div>
+</template>
+
+<script>
+export default {
+  // 이제 function을 이용하여야 하고, 리턴값을 주는 방식으로만 사용해야 한다.
+  data: function(){
+    return {
+      str:'hi'
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+## - 더 진화시키기 (하위 컴포넌트와 이벤트 주고받기)
+
+- 컴포넌트를 등록할때는 파스칼 케이스로 해주자. 두 단어 조합으로 사용할 것 ex) `AppHeader`
+- 아니면 뷰 태그인지 컴포넌트 태그인지 html 표준 태그인지 구분하지 못한다. 
+
+`App.vue`
+
+```Vue
+<template>
+  <!-- html 엘리먼트는 하나만 존재해야한다. -->
+  <div>
+    {{str}}
+    <app-header></app-header>
+  </div>
+</template>
+
+<script>
+  // 1. 임포트 시켜주고
+import AppHeader from './components/AppHeader.vue';
+
+
+export default {
+  // 이제 function만을 이용해야 한다.
+  data: function(){
+    return {
+      str:'hi'
+    }
+  },
+  //2. 컴포넌트 추가해준다.
+  components:{
+    'app-header':AppHeader
+  }
+}
+</script>
+
+<style>
+
+</style>
+
+```
+
+`AppHeader.vue`
+
+```Vue
+<template>
+    <div>
+        <h1>header</h1>
+    </div>
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style>
+
+</style>
+
+```
+
+- 이제 상위 컴포넌트에서 하위 컴포넌트로 데이터를 내려보자.
+
+`App.vue`
+
+```Vue
+<template>
+  <!-- html 엘리먼트는 하나만 존재해야한다. -->
+  <div>
+    <!-- 하위 컴포넌트로 데이터를 내리기 위해서는 v-bind가 필요하다. -->
+    <app-header v-bind:propsdata="str"></app-header>
+  </div>
+</template>
+
+<script>
+import AppHeader from './components/AppHeader.vue';
+
+
+export default {
+  // 이제 function만을 이용해야 한다.
+  data: function(){
+    return {
+      str:'this is App component'
+    }
+  },
+  components:{
+    'app-header':AppHeader
+  }
+}
+</script>
+
+<style>
+
+</style>
+
+```
+
+`AppHeader.vue`
+
+```Vue
+<template>
+    <div>
+        <h1>{{propsdata}}</h1>
+    </div>
+</template>
+
+<script>
+export default {
+    props:['propsdata']
+}
+</script>
+
+<style>
+
+</style>
+
+```
+
+데이터가 잘 내려갔다..
+
+
+
+- 이제 하위 컴포넌트에서 상위 컴포넌트로 값 옮겨보자
+
+`AppHeader.vue`
+
+```Vue
+<template>
+    <div>
+        <h1>{{propsdata}}</h1>
+        <!-- 1. 클릭시 sendEvent 함수를 실행시키겠다. -->
+        <button v-on:click="sendEvent">send</button>
+    </div>
+</template>
+
+<script>
+export default {
+    props:['propsdata'],
+    methods:{
+        // 2. renew 라는 이름으로 데이터를 상위 컴포넌트에 올리겠다.
+        sendEvent:function(){
+            this.$emit('renew')
+        }
+    },
+
+}
+</script>
+
+<style>
+
+</style>
+
+```
+
+`App.vue`
+
+```Vue
+<template>
+  <!-- html 엘리먼트는 하나만 존재해야한다. -->
+  <div>
+    <!-- 하위 컴포넌트로 데이터를 내리기 위해서는 v-bind가 필요하다. -->
+    <!-- 3. renew라는 데이터가 올라오면 renewStr을 실행시키겠다. -->
+    <app-header 
+        v-bind:propsdata="str"
+        v-on:renew="renewStr"></app-header>
+  </div>
+</template>
+
+<script>
+import AppHeader from './components/AppHeader.vue';
+
+
+export default {
+  // 이제 function만을 이용해야 한다.
+  data: function(){
+    return {
+      str:'this is App component'
+    }
+  },
+  components:{
+    'app-header':AppHeader
+  },
+  methods:{
+    // 4. 뭔가 상태를 바꿔주겠다.
+    renewStr:function(){
+      this.str='string is change!!'
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>
+
+```
+
+
+
+## - 최종 프로젝트 : 사용자 Form 양식 만들어보기
+
+1. 만들기 원하는 폴더 생성
+
+2. `bash`
+  ```bash
+  vue create '원하는 이름'
+  ```
+
+3. `App.vue`
+
+   ```Vue
+   <template>
+     <!-- 새로고침을 막는 최신 방법 prevent -->
+     <form v-on:submit.prevent='submitForm'>
+       <div>
+         <label for="username">id:</label>
+         <input id='username' type="text" v-model="username">
+       </div>
+       <div>
+         <label for="password">password:</label>
+         <!-- v-model 로 양방향 바인드 하기. -->
+         <input id='password' type="password" v-model="password">
+       </div>
+       <button type='submit'>login</button>
+     </form>
+   </template>
+
+   <script>
+   export default {
+     data:function(){
+       return {
+         username:'',
+         password:''
+       }
+     },
+     methods:{
+       submitForm:function(event){
+         // 새로고침을 막는 방법 but 옛날방법이다.
+         // event.preventDefault();
+
+         //원래는 콘솔이 남고 바로 새로고침된다.
+         console.log(this.username, this.password);
+       }
+     }
+   }
+   </script>
+
+   <style>
+
+   </style>
+
+   ```
+
+4. `bash`
+
+   ```Bash
+   npm i axios
+   ```
+
+   <https://jsonplaceholder.typicode.com/>
+
+   ```Vue
+   <template>
+   ...
+   </template>
+
+   <script>
+   import axios from 'axios';
+
+   export default {
+     data:function(){
+       return {
+         username:'',
+         password:''
+       }
+     },
+     methods:{
+       submitForm:function(event){
+         // 새로고침을 막는 방법 but 옛날방법이다.
+         // event.preventDefault();
+
+         //원래는 콘솔이 남고 바로 새로고침된다.
+         console.log(this.username, this.password);
+
+         var url='https://jsonplaceholder.typicode.com/users';
+         var data={
+           username : this.username,
+           password : this.password
+         }
+         // 데이터 생성 및 조작
+         axios.post(url,data)
+           .then(function(response){
+             console.log(response);
+           })
+           .then(function(error){
+             console.log(error);
+           })
+       }
+     }
+   }
+   </script>
+
+   <style>
+
+   </style>
+   ```
+
+   서버 경로가 맞지 않아 켜지지 않는 경우가 있다. 해당 폴더 오른쪽 클릭 후 터미널 열기하면 된다.
+
+5. 서버가 전송되고 , json으로 다시 응답되는것을 볼 수 있었다.. 프로젝트 끝!
+
+
+
+## - 앞으로 해야할 일들.. 그리고 마무리
+
+- 리엑티비티
+  - 뷰의 핵심 기능, 중심사상 데이터 변화 감지 및 뷰 반영. 속성등을 제공
+  - 라이브러리에서 편하게 관리해준다.
+- 인스턴스
+  - 뷰로 개발할때 필수로 생성해야하는 단위, 내용을 추가함으로서 화면을 조작할 수 있다.
+- 컴포넌트
+  - 화면의 영역을 구분해서 개발하는 방식. 현재 웹 프론트에서 가장 중요한 개념이다.
+  - 컴포넌트 기반 개발이 중요하다. 재사용성이 뛰어나다.
+- 컴포넌트 통신
+  - 데이터 규칙 제한, 여러명의 개발자들이 개발하면서도 흐름을 예측할 수 있는게 장점
+  - props
+    - 상위에서 하위로 내리기
+  - event emit
+    - 하위에서 상위로 올리기
+- HTTP 통신 라이브러리 (axios)
+  - 가장 대중적이다.
+- 템플릿 문법
+  - 화면을 조작하기위한 문법.
+  - 데이터 바인딩
+    - 데이터의 변화에 따라 화면에 그것을 엮어내는 것.
+  - 뷰 디렉티브
+    - 뷰가 추가적으로 제공하는 문법. 보통 v-로 이루어진다.
+- Vue-cli
+  - 프로젝트 생성시 명령어를 이용해 생성하는 방식. 
+- 싱글 파일 컴포넌트
+  - .vue 파일이 내부적으로 어떻게 돌아가는지 맛봄
