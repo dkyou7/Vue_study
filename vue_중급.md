@@ -131,7 +131,9 @@
 
 - 폰트 어썸(아이콘 제작) : <https://fontawesome.com/>
    - 유저별 키트 하나씩 발급하는데 이 키트하나로 이용가능하다.
-
+- `   <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>`
+     - 이건 예전버전 fontawesome인데 따로 kits 발급 안받아도 사용 가능하다고 함..
+   
 - 구글 폰트 : [http://noonnu.cc](http://noonnu.cc/)
 
 `index.html`
@@ -288,6 +290,32 @@ export default {
     }
 }
 </script>
+<style scoped>
+    input:focus{
+        outline: none;
+    }
+    .inputBox{
+        background:white;
+        height: 50px;
+        line-height: 50px;
+        border-radius: 5px;
+    }
+    .inputBox input{
+        border-style: none;
+        font-size: 0.9rem;
+    }
+    .addContainer{
+        float:right;
+        background:linear-gradient(to right,#6478fb,#8763fb);
+        display: block;
+        width:3rem;
+        border-radius: 0 5px 5px 0;
+    }
+    .addBtn{
+        color:white;
+        vertical-align: middle;
+    }
+</style>
 ```
 
 - 처음 프로젝트를 하면 fontawesome 에서 kit을 받아서 `head`에 넣어야한다. ~~키트 안넣으면 아이콘 안뜬다~~
@@ -350,10 +378,10 @@ export default {
     <div>
         <ul>
             <li v-for="todoItem in todoItems" v-bind:key="todoItem" class='shadow'>
-                {{todoItem}}
-                <span class='removeBtn'>
-                    <i class="fas fa-trash-alt"></i>
-                </span>
+                    {{todoItem}}
+                    <span class='removeBtn'>
+                        <i class="fas fa-trash-alt"></i>
+                    </span>
             </li>
             <!-- <li>1</li>
             <li>2</li>
@@ -460,7 +488,6 @@ export default {
 
 ```js
 <script>
-import { log } from 'util'; // eslint-disable-line no-unused-vars
 export default {
     data:function(){
         return {
@@ -652,7 +679,114 @@ https://github.com/joshua1988/vue-intermediate
 
 ## 14. 문제점 개선한 구조 안내
 
-- 뷰에 잘 갱신이 안되는 경우
-- 컴포넌트간의 통신 구조를 개선한다.
-- 
+- 추가를 했더니 뷰에 잘 갱신이 안되는 경우
+  - input 에서 추가를 했지만 리스트에는 추가를 하지 않았다.
+  - 컴포넌트간의 통신 구조를 개선한다.
+
+![update_instruction](img/update_instruction.PNG)
+
+![update_instruction2](img/update_instruction2.PNG)
+
+- 컨테이너의 개념으로 생각하면 된다.
+- 비즈니스 로직 데이터 조작에 관련된 것을 컨테이너라고 한다.
+- 뷰엑스 컴포넌트에 사용할 데이터를 한곳에다 몰아넣음. 작은 버젼의 뷰엑스 구조라고 생각하면 된다.
+
+## 15. [리팩토링] 할 일 목록 표시 기능
+
+- `App.vue`
+
+```vue
+<template>
+  <div id="app">
+    <TodoHeader></TodoHeader>
+    <TodoInput></TodoInput>
+    <!-- v-bind:[내릴 데이터]="현재 컴포넌트에서 가지고 있는 데이터" -->
+    <TodoList v-bind:propsdata="todoItems"></TodoList>
+    <TodoFooter></TodoFooter>
+  </div>
+</template>
+
+<script>
+import TodoHeader from './components/TodoHeader.vue'
+import TodoInput from './components/TodoInput.vue'
+import TodoList from './components/TodoList.vue'
+import TodoFooter from './components/TodoFooter.vue'
+
+export default {
+  // 로컬 스토리지에 있던 데이터를 가져온다.
+    data:function(){
+    return {
+      todoItems:[]
+    }
+  },
+  components: {
+    TodoHeader: TodoHeader,
+    TodoInput: TodoInput,
+    TodoList: TodoList,
+    TodoFooter: TodoFooter
+  },
+    created: function() {
+    if (localStorage.length > 0) {
+      for (var i = 0; i < localStorage.length; i++) {
+        if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
+          this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style>
+body {
+...
+</style>
+
+```
+
+```vue
+<template>
+  <section>
+    <ul>
+      <!-- 2. 여기 바꿔주기 -->
+      <!-- <li v-for="(todoItem, index) in todoItems" class="shadow" v-bind:key="todoItem.item"> -->
+        <li v-for="(todoItem, index) in propsdata" class="shadow" v-bind:key="todoItem.item">
+        <i class="checkBtn fas fa-check" v-bind:class="{checkBtnCompleted: todoItem.completed}" v-on:click="toggleComplete(todoItem, index)"></i>
+        <span v-bind:class="{textCompleted: todoItem.completed}">{{ todoItem.item }}</span>
+        <span class="removeBtn" v-on:click="removeTodo(todoItem, index)">
+          <i class="removeBtn fas fa-trash-alt"></i>
+        </span>
+      </li>
+    </ul>
+  </section>
+</template>
+
+<script>
+export default {
+  // 1. 이쪽 추가하기.
+  props:['propsdata'],
+  data: function() {
+    return {
+      todoItems: []
+    }
+  },
+  methods: {
+    removeTodo: function(todoItem, index) {
+      this.todoItems.splice(index, 1);
+      localStorage.removeItem(todoItem);
+    },
+    toggleComplete: function(todoItem, index) {
+      todoItem.completed = !todoItem.completed;
+      localStorage.removeItem(todoItem.item);
+      localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+    }
+  }
+}
+</script>
+
+<style scoped>
+...
+</style>
+
+```
 
