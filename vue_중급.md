@@ -23,49 +23,47 @@
     - 앞에 `sudo`를 붙여주자.
 
     `vue-cli 2.x version`
-    
+
     ```bash
     vue init webpack-simple vue-todo
-    
+
     cd vue-todo
     npm install
     npm run dev
     ```
     `vue-cli 3.x version`
-    
+
     ```bash
     vue create 프로젝트 폴더 위치
     ```
-    
+
   - 프로젝트 생성
-  
+
     `bash` `3.x` 
-  
-      ```bash
+
+      ```bash```
     vue create vue-todo
-      
+      ```
     // 만들고 나서
     // rm -rf vue-todo
     // vue init webpack-simple vue-todo
-    
+
     // cd vue-todo
     // npm install
     // npm run dev
-    
-    
+      ```
+
+  ```
     cd vue-todo
     npm run serve
-      ```
-    
-    
-  
+  ```
 
 ## [중요] VS code에서 git bash 사용하기
 
 - VS code 실행 후 `ctrl`+`,`입력 후 설정에 들어갑니다.
 - 검색창에 `  terminal.integrated.shell.windows` 입력합니다.
 - `json` 형식 나올텐데 밑에꺼 복붙하면 됩니다.
-  
+
     ```
     "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe"
     ```
@@ -100,15 +98,16 @@
       <todo-footer></todo-footer>
     </div>
   </template>
-  
+
   <script>
   // 1. 먼저 이렇게 임포트 해준다.
   import TodoHeader from './components/TodoHeader.vue';
   import TodoInput from './components/TodoInput.vue';
   import TodoList from './components/TodoList.vue';
   import TodoFooter from './components/TodoFooter.vue';
-  
-  
+  ```
+
+
   export default {
     // 2. 쓰려면 컴포넌트로 등록해주자.
     components:{
@@ -119,9 +118,9 @@
     }
   }
   </script>
-  
+
   <style>
-  
+
   </style>
   ```
 
@@ -133,12 +132,12 @@
    - 유저별 키트 하나씩 발급하는데 이 키트하나로 이용가능하다.
 - `   <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>`
      - 이건 예전버전 fontawesome인데 따로 kits 발급 안받아도 사용 가능하다고 함..
-   
+
 - 구글 폰트 : [http://noonnu.cc](http://noonnu.cc/)
 
 `index.html`
 
-```html
+​```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -161,7 +160,7 @@
   </body>
 </html>
 
-```
+  ```
 
 ## 5. TodoHeader 컴포넌트 구현
 
@@ -744,6 +743,8 @@ body {
 
 ```
 
+- `Todolist.vue`
+
 ```vue
 <template>
   <section>
@@ -790,3 +791,410 @@ export default {
 
 ```
 
+## *** 잠깐 짱나는 일 생겨서 기록남깁니다.
+
+- 프로젝트를 데스크탑에서 진행하다가 맥으로 옮겨서 진행하려고 함.
+- 이전까지 강의 들었던거 다시 치는것보다 저장시점 옮겨서 중간부터 들으려고 깃허브 클론을 받아옴.
+- 에러 자꾸 나면서 안돌아감..
+- 원인
+  1. sudo 안해줘서.
+  2. vue-todo 들어가기 전에 `npm install -g @vue/cli` 해줘야 하고, `cd vue-todo` 로 입장해서 `npm install` 해줘야합니다. 그리고 캡틴판교님은 `2.x`버전을 이용하셨기 때문에 `npm run dev` 를 이용하여 서버를 구동시켜야합니다.
+- 끝
+
+## 15. [리팩토링] 할 일 추가 기능
+
+- 할 일 인풋에 날리면 바로 UI에 추가되는 기능을 추가해보자.
+- `this.$emit('데이터이름')`으로 데이터를 올려보내고, `v-on:데이터이름="현재컴포넌트 메서드"`로 중개자가 받은 후 메서드에서 처리하는 과정을 담았다.
+
+`App.vue`
+
+```Vue
+<template>
+  <div id="app">
+    <TodoHeader></TodoHeader>
+    <!-- v-on:[하위 컴포넌트에서 발생시킨 이벤트 이름]="[현재 컴포넌트 메서드 명]" -->
+    <TodoInput v-on:addTodoItem="addOneItem"></TodoInput>
+    <!-- v-bind:[내려보낼 속성 이름]="현재 컴포넌트 속성 이름" -->
+    <TodoList v-bind:propsdata="todoItems"></TodoList>
+    <TodoFooter></TodoFooter>
+  </div>
+</template>
+
+<script>
+import TodoHeader from './components/TodoHeader.vue'
+import TodoInput from './components/TodoInput.vue'
+import TodoList from './components/TodoList.vue'
+import TodoFooter from './components/TodoFooter.vue'
+
+export default {
+  data:function(){
+    return {
+      todoItems:[]
+    }
+  },
+  components: {
+    TodoHeader: TodoHeader,
+    TodoInput: TodoInput,
+    TodoList: TodoList,
+    TodoFooter: TodoFooter
+  },
+  methods:{
+    addOneItem:function(todoItem){
+      // 가져온 변수로 매핑시켜주면 된다.
+        var obj = {completed: false, item: todoItem};
+        localStorage.setItem(todoItem, JSON.stringify(obj));
+        //아이템을 넣어준다.
+        this.todoItems.push(obj);
+    }
+  },
+  created: function() {
+    if (localStorage.length > 0) {
+      for (var i = 0; i < localStorage.length; i++) {
+        if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
+          this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
+        }
+      }
+    }
+  }  
+}
+</script>
+
+<style>
+...
+</style>
+
+```
+
+`TodoInput.vue`
+
+```Vue
+<template>
+  <div class="inputBox shadow">
+    <input type="text" v-model="newTodoItem" v-on:keyup.enter="addTodo">
+    <span class="addContainer" v-on:click="addTodo">
+      <i class="addBtn fas fa-plus" aria-hidden="true"></i>
+    </span>
+  </div>
+</template>
+
+<script>
+export default {
+  data: function() {
+    return {
+      newTodoItem: ''
+    }
+  },
+  methods: {
+    addTodo: function() {
+      if (this.newTodoItem !== '') {
+
+        // this.$emit('이벤트 이름',인자 1,인자 2,...);
+        // 이벤트가 하위에서 발생
+        this.$emit('addTodoItem',this.newTodoItem);
+
+        //App.vue로 이동시킬 코드
+        // var obj = {completed: false, item: this.newTodoItem};
+        // localStorage.setItem(this.newTodoItem, JSON.stringify(obj));
+
+        this.clearInput();
+      }
+    },
+    clearInput: function() {
+      this.newTodoItem = '';
+    }
+  }
+}
+</script>
+
+<style scoped>
+...
+</style>
+
+```
+
+## 16. [리팩토링] 할 일 삭제 기능
+
+- 마찬가지로 이벤트 발생시켜서 `App.vue`에서 처리하도록 함
+- `TodoList.vue`
+
+```Vue
+<script>
+export default {
+  props:['propsdata'],
+  methods: {
+    removeTodo: function(todoItem, index) {
+      // 뿌려주는 역할만 수행하고 나머지는 App.vue에서 처리하도록 한다. 고로 데이터 그대로 위 컴포넌트로 전달!
+      this.$emit('removeItem',todoItem,index);
+    },
+    toggleComplete: function(todoItem, index) {
+      todoItem.completed = !todoItem.completed;
+      localStorage.removeItem(todoItem.item);
+      localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+    }
+  }
+}
+</script>
+```
+
+- `App.vue`
+
+```Vue
+<template>
+  <div id="app">
+    <TodoHeader></TodoHeader>
+    <!-- v-on:[하위 컴포넌트에서 발생시킨 이벤트 이름]="[현재 컴포넌트 메서드 명]" -->
+    <TodoInput v-on:addTodoItem="addOneItem"></TodoInput>
+    <!-- v-bind:[내려보낼 속성 이름]="현재 컴포넌트 속성 이름" -->
+    <TodoList v-bind:propsdata="todoItems" v-on:removeItem="removeOneItem"></TodoList>
+    <TodoFooter></TodoFooter>
+  </div>
+</template>
+
+<script>
+import TodoHeader from './components/TodoHeader.vue'
+import TodoInput from './components/TodoInput.vue'
+import TodoList from './components/TodoList.vue'
+import TodoFooter from './components/TodoFooter.vue'
+
+export default {
+  data:function(){
+    return {
+      todoItems:[]
+    }
+  },
+  components: {
+    TodoHeader: TodoHeader,
+    TodoInput: TodoInput,
+    TodoList: TodoList,
+    TodoFooter: TodoFooter
+  },
+  methods:{
+    addOneItem:function(todoItem){
+      // 가져온 변수로 매핑시켜주면 된다.
+        var obj = {completed: false, item: todoItem};
+        localStorage.setItem(todoItem, JSON.stringify(obj));
+        //아이템을 넣어준다.
+        this.todoItems.push(obj);
+    },
+    removeOneItem:function(todoItem,index){
+      // JSON 형식으로 가져오는 todoItem이기 때문에 한단계 더 들어가줘야 한다.
+      localStorage.removeItem(todoItem.item);
+      this.todoItems.splice(index,1);
+    }
+  },
+  created: function() {
+    if (localStorage.length > 0) {
+      for (var i = 0; i < localStorage.length; i++) {
+        if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
+          this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
+        }
+      }
+    }
+  }  
+}
+</script>
+```
+
+## 17. [리팩토링] 할 일 완료 기능
+
+- 마찬가지로 이벤트 발생시켜서 `App.vue`에서 처리하도록 함
+- `TodoList.vue`
+
+```Vue
+<template>
+  <section>
+    <ul>
+      <li v-for="(todoItem, index) in propsdata" class="shadow" v-bind:key="todoItem.item">
+        <i class="checkBtn fas fa-check" v-bind:class="{checkBtnCompleted: todoItem.completed}" v-on:click="toggleComplete(todoItem, index)"></i>
+        <span v-bind:class="{textCompleted: todoItem.completed}">{{ todoItem.item }}</span>
+        <i class="removeBtn fas fa-trash-alt" v-bind:class="{checkBtnCompleted: todoItem.completed}" v-on:click="removeTodo(todoItem, index)"></i>
+      </li>
+    </ul>
+  </section>
+</template>
+
+<script>
+export default {
+  props:['propsdata'],
+  methods: {
+    removeTodo: function(todoItem, index) {
+      // 뿌려주는 역할만 수행하고 나머지는 App.vue에서 처리하도록 한다. 고로 데이터 그대로 위 컴포넌트로 전달!
+      this.$emit('removeItem',todoItem,index);
+    },
+    toggleComplete: function(todoItem, index) {
+      this.$emit('toggleItem',todoItem,index);
+      // todoItem.completed = !todoItem.completed;
+      // localStorage.removeItem(todoItem.item);
+      // localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+    }
+  }
+}
+</script>
+```
+
+- `App.vue`
+
+```Vue
+<template>
+  <div id="app">
+    <TodoHeader></TodoHeader>
+    <!-- v-on:[하위 컴포넌트에서 발생시킨 이벤트 이름]="[현재 컴포넌트 메서드 명]" -->
+    <TodoInput v-on:addTodoItem="addOneItem"></TodoInput>
+    <!-- v-bind:[내려보낼 속성 이름]="현재 컴포넌트 속성 이름" -->
+    <TodoList v-bind:propsdata="todoItems" v-on:removeItem="removeOneItem" v-on:toggleItem="toggleOneItem"></TodoList>
+    <TodoFooter></TodoFooter>
+  </div>
+</template>
+
+<script>
+import TodoHeader from './components/TodoHeader.vue'
+import TodoInput from './components/TodoInput.vue'
+import TodoList from './components/TodoList.vue'
+import TodoFooter from './components/TodoFooter.vue'
+
+export default {
+  data:function(){
+    return {
+      todoItems:[]
+    }
+  },
+  components: {
+    TodoHeader: TodoHeader,
+    TodoInput: TodoInput,
+    TodoList: TodoList,
+    TodoFooter: TodoFooter
+  },
+  methods:{
+    addOneItem:function(todoItem){
+      // 가져온 변수로 매핑시켜주면 된다.
+        var obj = {completed: false, item: todoItem};
+        localStorage.setItem(todoItem, JSON.stringify(obj));
+        //아이템을 넣어준다.
+        this.todoItems.push(obj);
+    },
+    removeOneItem:function(todoItem,index){
+      localStorage.removeItem(todoItem.item);
+      this.todoItems.splice(index,1);
+    },
+    toggleOneItem:function(todoItem,index){
+      // todoItem.completed = !todoItem.completed;
+      this.todoItems[index].completed = !this.todoItems[index].completed;
+      localStorage.removeItem(todoItem.item);
+      localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+    }
+  },
+  created: function() {
+    if (localStorage.length > 0) {
+      for (var i = 0; i < localStorage.length; i++) {
+        if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
+          this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
+        }
+      }
+    }
+  }  
+}
+</script>
+```
+
+## 18. [리팩토링] 할 일 모두 삭제 푸터 기능 추가
+
+- `TodoFooter.vue`
+
+```Vue
+<template>
+  <div class="clearAllContainer">
+    <span class="clearAllBtn" v-on:click="clearTodo">Clear All</span>
+  </div>
+</template>
+
+<script>
+export default {
+  methods: {
+    clearTodo: function() {
+      // localStorage.clear();
+      this.$emit('clearEvent');
+    }
+  }
+}
+</script>
+```
+
+- `App.vue`
+
+```Vue
+<template>
+  <div id="app">
+    <TodoHeader></TodoHeader>
+    <!-- v-on:[하위 컴포넌트에서 발생시킨 이벤트 이름]="[현재 컴포넌트 메서드 명]" -->
+    <TodoInput v-on:addTodoItem="addOneItem"></TodoInput>
+    <!-- v-bind:[내려보낼 속성 이름]="현재 컴포넌트 속성 이름" -->
+    <TodoList v-bind:propsdata="todoItems" v-on:removeItem="removeOneItem" v-on:toggleItem="toggleOneItem"></TodoList>
+    <TodoFooter v-on:clearEvent="clearAllItem"></TodoFooter>
+  </div>
+</template>
+
+<script>
+import TodoHeader from './components/TodoHeader.vue'
+import TodoInput from './components/TodoInput.vue'
+import TodoList from './components/TodoList.vue'
+import TodoFooter from './components/TodoFooter.vue'
+
+export default {
+  data:function(){
+    return {
+      todoItems:[]
+    }
+  },
+  components: {
+    TodoHeader: TodoHeader,
+    TodoInput: TodoInput,
+    TodoList: TodoList,
+    TodoFooter: TodoFooter
+  },
+  methods:{
+    addOneItem:function(todoItem){
+      // 가져온 변수로 매핑시켜주면 된다.
+        var obj = {completed: false, item: todoItem};
+        localStorage.setItem(todoItem, JSON.stringify(obj));
+        //아이템을 넣어준다.
+        this.todoItems.push(obj);
+    },
+    removeOneItem:function(todoItem,index){
+      localStorage.removeItem(todoItem.item);
+      this.todoItems.splice(index,1);
+    },
+    toggleOneItem:function(todoItem,index){
+      // todoItem.completed = !todoItem.completed;
+      this.todoItems[index].completed = !this.todoItems[index].completed;
+      localStorage.removeItem(todoItem.item);
+      localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+    },
+    clearAllItem:function(){
+      localStorage.clear();
+      this.todoItems = [];
+    }
+  },
+  created: function() {
+    if (localStorage.length > 0) {
+      for (var i = 0; i < localStorage.length; i++) {
+        if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
+          this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
+        }
+      }
+    }
+  }  
+}
+</script>
+```
+
+## 19 . 리팩토링이 완료된 어플리케이션 정리
+
+1. 구조 변환
+   - 데이터 구조를 변동시키므로서 컨테이너라는 개념 탄생시킴
+   - 각 고유 컴포넌트가 각 데이터를 가지고 있었으나 한개의 컴포넌트로 몰아서 데이터 조작을 다 시킴
+   - 조작된 데이터를 각 컴포넌트에 뿌려주는 구조를 가짐. - 컨테이너 컴포넌트 구조
+   - 끝단 컴포넌트는 UI 표기만 할 것을 권장.
+   - 중앙 관리식 데이터 컴포넌트 관리 - 뷰엑스의 축소판이라고 한다.
+   - 한곳에서 데이터를 관리하는 시스템
+2. transition , library 를 이용하여 애니매이션으로 해결한다.
+3. 모달 컴포넌트로 진행할 예정!
