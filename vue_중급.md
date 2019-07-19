@@ -1198,3 +1198,269 @@ export default {
    - 한곳에서 데이터를 관리하는 시스템
 2. transition , library 를 이용하여 애니매이션으로 해결한다.
 3. 모달 컴포넌트로 진행할 예정!
+
+## 20 . 모달 컴포넌트 등록
+
+- Components
+  - common
+    - modal.vue 
+- 의 폴더 구조 생성한다.
+- https://vuejs.org/v2/examples/modal.html 여기를 이용할 것이다.
+- `TodoInput.vue`의 하위 컴포넌트로 등록 해준다.
+
+```vue
+<template>
+  <div class="inputBox shadow">
+    <input type="text" v-model="newTodoItem">
+    <span class="addContainer" v-on:click="addTodo">
+      <i class="addBtn fas fa-plus" aria-hidden="true"></i>
+    </span>
+      <!-- use the modal component, pass in the prop -->
+    <modal-components v-if="showModal" @close="showModal = false">
+      <!--
+        you can use custom content here to overwrite
+        default content
+      -->
+      <h3 slot="header">custom header</h3>
+    </modal-components>
+  </div>
+</template>
+
+<script>
+// 하위 컴포넌트로 등록해주었다.
+import Modal from './common/Modal.vue';
+
+export default {
+  data: function() {
+    return {
+      newTodoItem: '',
+      showModal:false
+    }
+  },
+  methods: {
+    addTodo: function() {
+      if (this.newTodoItem !== '') {
+        this.$emit('addItem', this.newTodoItem);
+        this.clearInput();
+      }
+    },
+    clearInput: function() {
+      this.newTodoItem = '';
+    }
+  },
+  // 컴포넌트 추가
+  components:{
+    'modal-components':Modal
+  }
+}
+</script>
+
+<style scoped>
+...
+</style>
+
+```
+
+## 21. 모달 컴포넌트의 slot 소개 및 퀴즈
+
+- 슬롯 : 다시 정의할 수 있음. 너가 원하는 컨텐트를 통해 모달을 재정의 할 수 있음.
+- 모달 내부의 내용을 내맘대로 다시 정의할 수 있다.
+
+## 22. 풀이 및 코드 구현
+
+- 클로즈 버튼 추가 구현
+- fontawesome - times 검색
+- v-on = @
+
+`Modal.vue`
+
+```vue
+<template>
+   <transition name="modal">
+    <div class="modal-mask">
+      <div class="modal-wrapper">
+        <div class="modal-container">
+
+          <div class="modal-header">
+            <slot name="header">
+              default header
+            </slot>
+          </div>
+
+          <div class="modal-body">
+            <slot name="body">
+              default body
+            </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </transition>   
+</template>
+
+<script>
+
+export default {
+
+}
+</script>
+
+<style>
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+  display: table;
+  transition: opacity .3s ease;
+}
+
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.modal-container {
+  width: 300px;
+  margin: 0px auto;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  transition: all .3s ease;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.modal-header h3 {
+  margin-top: 0;
+  color: #42b983;
+}
+
+.modal-body {
+  margin: 20px 0;
+}
+
+.modal-default-button {
+  float: right;
+}
+
+/*
+ * The following styles are auto-applied to elements with
+ * transition="modal" when their visibility is toggled
+ * by Vue.js.
+ *
+ * You can easily play with the modal transition by editing
+ * these styles.
+ */
+
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+</style>
+
+```
+
+`TodoInput.vue`
+
+```vue
+<template>
+  <div class="inputBox shadow">
+    <input type="text" v-model="newTodoItem">
+    <span class="addContainer" v-on:click="addTodo">
+      <i class="addBtn fas fa-plus" aria-hidden="true"></i>
+    </span>
+      <!-- use the modal component, pass in the prop -->
+    <modal-components v-if="showModal" @close="showModal = false">
+      <!--
+        you can use custom content here to overwrite
+        default content
+      -->
+      <h3 slot="header">경고!
+        <i class="closeModalBtn fas fa-times" @click="showModal=false"></i>
+      </h3>
+      <p slot="body">아무것도 입력하지 않으셨습니다.</p>
+    </modal-components>
+  </div>
+</template>
+
+<script>
+// 하위 컴포넌트로 등록해주었다.
+import Modal from './common/Modal.vue';
+
+export default {
+  data: function() {
+    return {
+      newTodoItem: '',
+      showModal:false
+    }
+  },
+  methods: {
+    addTodo: function() {
+      if (this.newTodoItem !== '') {
+        this.$emit('addItem', this.newTodoItem);
+        this.clearInput();
+      }else{
+        this.showModal = !this.showModal;
+      }
+    },
+    clearInput: function() {
+      this.newTodoItem = '';
+    }
+  },
+  // 컴포넌트 추가
+  components:{
+    'modal-components':Modal
+  }
+}
+</script>
+
+<style scoped>
+input:focus {
+  outline: none;
+}
+.inputBox {
+  background: white;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 5px;
+}
+.inputBox input {
+  border-style: none;
+  font-size: 0.9rem;
+}
+.addContainer {
+  float: right;
+  background: linear-gradient(to right, #6478FB, #8763FB);
+  display: block;
+  width: 3rem;
+  border-radius: 0 5px 5px 0;
+}
+.addBtn {
+  color: white;
+  vertical-align: middle;
+}
+.closeModalBtn{
+
+}
+</style>
+```
+
+## 23. 트랜지션 소개 및 구현
+
+- 사용자 관점의 css 구현
+- 트랜지션으로 UI 개선이 가능하다.
+- https://vuejs.org/v2/guide/transitions.html#List-Transitions 여기에서 가능
+
