@@ -62,6 +62,7 @@ console.log(i);	//6
   - 호이스팅(Hoisting)
     - 끌어올려진다. 바닥에서 천장까지 끌어올려진다.
     - 함수나 변수가 가장 상단에 위치한 것처럼 작용한다.
+    - js 해석기는 코드 라인 순서 관계 없이 함수 선언식과 변수를 위한 메모리 공간을 먼저 확보한다.
 
 ```js
 function a(){
@@ -72,4 +73,81 @@ function a(){
 	return 5;
 }
 ```
+
+- 코드 순서 재조정 어떻게 될까요?
+
+```js
+var sum=5;
+sum = sum+i;
+
+function sumAllNumber(){
+...
+}
+var i = 10;
+```
+
+- 일단 오류가 나지 않는게 신기하다.. 
+
+```js
+// 1. 함수 선언식과 변수 선언을 hoisting
+var sum;
+function sumAllNumber(){
+...
+}
+var i;
+// 2. 변수 대입 및 할당.
+sum=5;
+sum = sum+i;
+i=10;
+```
+
+## 29. const와 let 추가 설명 및 정리
+
+28번에서 배웠던 것과는 다르게 변수를 let으로 설정하면 에러가 난다.
+
+```js
+let sum=0;
+for(let i = 1;i<=5;i++){
+	sum = sum+i;
+}
+console.log(sum); // 15
+console.log(i);	// error
+```
+
+`const` 한번 지정한 값 변경 불가능
+
+```js
+const a=10;
+a=20; //error
+```
+
+but, 객체나 배열의 내부는 변경할 수 있다.
+
+```js
+// 객체 선언 {}
+const a={};
+a.num=10;
+console.log(a);	// {num:10}
+
+// 배열 선언 []
+const a=[];
+a.push(20);
+console.log(a);	// [20]
+```
+
+```js
+function f(){
+	{
+	let x;
+        {
+         const x="sneaky";
+         x="foo";	// error
+        }
+	 x="bar"; // not error
+	 let x = "inner"; //error
+	}
+}
+```
+
+## 30. [리팩토링] const와 let
 
