@@ -876,5 +876,87 @@ methods:{
 
 ## 48 . helper 함수 및 ES6 Spread 연산자 소개
 
+- 각 속성들을 더 쉽게 사용하는 방법 - helper
+- store에 있는 아래 4가지 속성들을 간편하게 코딩하는 방법
+  - state -> mapState
+  - getters -> mapGetters
+  - mutations -> mapMutations
+  - actions -> mapActions
+- 헬퍼의 사용법
+  - 헬퍼를 사용하고자 하는 vue 파일에서 아래와 같이 해당 헬퍼를 로딩
 
+```js
+//App.vue
+import {mapState} from 'vuex'
+import {mapGetters} from 'vuex'
+import {mapMutations} from 'vuex'
+import {mapActions} from 'vuex'
 
+export default{
+    computed(){...mapState(['num']),...mapGetters(['countedNum'])},	// 표현해주는 속성
+    methods:{...mapMutations(['clickBtn']),...mapActions(['asyncClickBtn'])}
+}
+```
+
+- `...` 는 ES6의 `Object Spread Operator`입니다.
+
+![oso](img/oso.PNG)
+
+- 다음과 같이 josh를 흩뿌려 놓은 거서럼 다 볼 수 있게 하는 것이 Object Spread Operator이다.
+
+## 49. mapState, mapGetters 소개 및 ES6 spread 연산자를 쓰는 이유
+
+- mapState
+  - Vuex 에 선언한 state 속성을 뷰 컴포넌터에 더 쉽게 연결해주는 헬퍼
+
+```js
+//App.vue
+import {mapState} from 'vuex'
+
+computed(){
+    ...mapState(['num'])
+    // num(){return this.$store.state.num;}
+}
+```
+
+```js
+//store.js
+state:{
+    num:10
+}
+```
+
+```html
+<!-- <p>{{this.$store.state.num}}</p> -->
+<p>{{this.num}}</p>
+```
+
+- mapGetters
+  - Vuex에 선언한 getters 속성을 뷰 컴포넌트에 더 쉽게 연결해주는 헬퍼
+
+```js
+//App.vue
+import {mapGetters} from 'vuex'
+
+computed(){
+    ...mapGetters(['reverseMessage'])
+    // num(){return this.$store.state.num;}
+}
+```
+
+```js
+//store.js
+getters:{
+    reverseMessage(state){
+        return state.msg.split('').reverse().join('');
+    }
+}
+```
+
+```html
+<!-- <p>{{this.$store.getters.reverseMessage}}</p> -->
+<p>{{this.reverseMessage}}</p>
+```
+
+- ES6 spread 연산자를 쓰는 이유
+  - 기존에 components에 존재하는 computed 속성과 함께 쓰기 위해서 쓴다.
