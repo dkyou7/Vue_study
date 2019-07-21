@@ -470,7 +470,7 @@
                 template:'<h1>{{ propsdata }}</h1>',
                 props:['propsdata']
             }
-            var appContent = {
+            var appContent = {	
                 template:"<h1>{{propsdata}}</h1>",
                 // 1. 여기에다 변수를 먼저 등록한다.
                 props:['propsdata']
@@ -720,9 +720,7 @@
     </html>
     ```
 
-- ![스크린샷 2019-07-11 오후 10.07.57](../스크린샷 2019-07-11 오후 10.07.57.png)
-
-  이렇게 $route 가 생긴다!
+  이렇게 $route 가 생긴다!![route_make](img/route_make.png)
 
 - ```Html
   <body>
@@ -804,16 +802,14 @@
 </html>
 ```
 
-- 라우터 뷰는 뭐하는걸까?
-
-  - ![스크린샷 2019-07-11 오후 10.24.41](img/스크린샷 2019-07-11 오후 10.24.41.png)
+- 라우터 뷰는 뭐하는걸까?![route_error](img/route_error.png)
 
   - > 라우터 연결이 안되어있다면 이런 에러를 뿜을 수 있으니 조심하자!!
 
-  - ![스크린샷 2019-07-11 오후 10.29.23](img/스크린샷 2019-07-11 오후 10.29.23.png)
+  - ![route_error2](img/route_error2.png)
 
   - ```Html
-    <!DOCTYPE html>
+  <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -826,9 +822,9 @@
           	<!-- 화면에 따라 다르게 보이는 것 -->
             <router-view></router-view>
         </div>
-
+  
         <!-- 순서도 중요하다.. 먼저 뷰를 띄워놓고 그 다음줄에 라우터 띄워놓는다. -->
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
         <script>
             // 여기에 해당 컴포넌트를 간략하게 작성!
@@ -838,9 +834,9 @@
             var MainComponent={
                 template:'<div>this is main</div>'
             }
-
+  
             // 객체로 뺄 수 있다. 이걸 루트 컴포넌트에 저장시켜놓는다.
-            var rt = new VueRouter({
+          var rt = new VueRouter({
                 // routes라는 속성 : page 에 라우팅 정보가 들어간다. 보통 배열로 담긴다.
                 routes:[
                     {
@@ -866,8 +862,6 @@
     </body>
     </html>
     ```
-
-
 
 - Router-link*2 하고 탭 누르면 
 
@@ -1124,13 +1118,6 @@
     </html>
     ```
 
-
-- ​
-
-- ​
-
-- ​
-
 ### - 뷰 디렉티브와 뷰 바인딩, 클래스 바인딩
 
 - dom에 관한 정보까지 다 바꾸어주는 리엑티비티 성능!! 짱이다.
@@ -1221,7 +1208,7 @@
 
 ### - 모르는 문법이 나왔을 때 공식 문서를 보고 해결하는 방법
 
-- ​
+- 
   - dom에 관한 정보까지 다 바꾸어주는 리엑티비티 성능!! 짱이다.
 
   - ```Html
