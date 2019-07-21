@@ -172,5 +172,35 @@
 - 아래에서 위로 정보가 올라갈 때, 버튼 클릭 이벤트 시 발생한다
 - 요청을 받아 위쪽에서 데이터 처리 후 뿌려주는 방식으로 코드 흐름이 진행된다
 
+```html
+<body>
+    <div id="app">
+        <app-header></app-header>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var appHeader = {
+            // 이벤트 v-on:click="" 으로 정의하자.
+            template:'<button v-on:click="passEvent">click Me</button>',
+            methods:{
+                // 버튼을 클릭했을 때 발생하는 이벤트
+                passEvent: function(){
+                    this.$emit('pass');
+                }
+            }
+        };
+        new Vue({
+            el:'#app',
+            components:{
+                'app-header':appHeader
+            }
+        });
+    </script>
+</body>
+</html>
+```
 
+## 8. 같은 레벨에서의 컴포넌트 통신 방법
+
+![통신](img/통신1.PNG)
 
