@@ -960,3 +960,469 @@ getters:{
 
 - ES6 spread 연산자를 쓰는 이유
   - 기존에 components에 존재하는 computed 속성과 함께 쓰기 위해서 쓴다.
+
+## 50. [리팩토링] getters와 mapGetters 적용하기
+
+`store.js`
+
+```js
+export const store = new Vuex.Store({
+    state:{
+        todoItems:storage.fetch(),
+        headerTitle:'Todo it!'
+    },
+    // 추가
+    getters:{
+        storedTodoItems(state){
+            return state.todoItems;
+        }
+    },
+    mutations:{
+		...
+    }
+});
+```
+
+`TodoList.vue`
+
+```Vue
+<template>
+  <section>
+    <transition-group name="list" tag="ul">
+      <!-- <li v-for="(todoItem, index) in propsdata" class="shadow" v-bind:key="todoItem.item"> -->
+      <!-- <li v-for="(todoItem, index) in this.$store.state.todoItems" class="shadow" v-bind:key="todoItem.item"> -->
+      <li v-for="(todoItem, index) in this.storedTodoItems" class="shadow" v-bind:key="todoItem.item">
+        <i class="checkBtn fas fa-check" v-bind:class="{checkBtnCompleted: todoItem.completed}" v-on:click="toggleComplete(todoItem, index)"></i>
+        <span v-bind:class="{textCompleted: todoItem.completed}">{{ todoItem.item }}</span>
+        <span class="removeBtn" v-on:click="removeTodo(todoItem, index)">
+          <i class="removeBtn fas fa-trash-alt"></i>
+        </span>
+      </li>
+    </transition-group>
+  </section>
+</template>
+
+<script>
+import {mapGetters} from 'vuex';
+
+export default {
+  // props: ['propsdata'],
+  methods: {
+    removeTodo(todoItem, index) {
+      // this.$emit('removeItem', todoItem, index);
+      const obj = {todoItem,index};
+      this.$store.commit('removeOneItem',obj);
+    },
+    toggleComplete(todoItem, index) {
+      // this.$emit('toggleItem', todoItem, index); 
+      this.$store.commit('toggleOneItem',{todoItem,index});
+    }
+  },
+  // 이거 추가
+  computed:{
+    // todoItems(){
+    //   return this.$store.getters.storedTodoItems;
+    // }
+    ...mapGetters(['storedTodoItems'])
+  }
+}
+</script>
+
+<style scoped>
+...
+</style>
+
+```
+
+## 51. MapMutations, mapActions 소개 및 헬퍼의 유연한 문법
+
+### mapMutations
+  - Vuex 에 선언한 Mutaions 속성을 뷰 컴포넌트에 더 쉽게 연결해주는 헬퍼
+
+```Js
+//App.vue
+import {mapMutations} from 'vuex'
+
+methods:{
+    ...mapMutations(['clickBtn']),
+      authLogin(){},
+      displayTable(){}
+}
+
+//store.js
+mutations:{
+    clickBtn(state){
+        alert(state.msg);
+    }
+}
+```
+
+```html
+<button @click="clickBtn">popup msg</button>
+```
+
+### mapActions
+  - Vuex 에 선언한 action 속성을 뷰 컴포넌트에 더 쉽게 연결해주는 헬퍼
+
+```Js
+//App.vue
+import {mapActions} from 'vuex'
+
+methods:{
+    ...mapActions(['delayClickBtn']),
+}
+
+//store.js
+actions:{
+    delayClickBtn(context){
+        setTimeOut(()=>context.commit('clickBtn'),2000);
+    }
+}
+```
+
+```html
+<button @click="delayClickBtn">delay popup msg</button>
+```
+### 헬퍼의 유연한 문법
+
+  - Vuex 에 선언한 속성을 그대로 컴포넌트에 연결하는 문법
+
+```js
+  //배열 리터럴
+  ...mapMutations([
+    'clickBtn',	// 'clickBtn':clickBtn
+    'addNumber'	// addNumber(인자)
+  ])
+```
+
+  - Vuex에 성넝한 속성을 컴포넌트의 특정 메서드에다가 연결하는 문법
+
+```Js
+  //객체 리터럴
+  ...mapMutations({
+    popupMsg:'clickBtn'	//컴포넌트 메서드 명 : Store의 뮤테이션 명
+  })
+```
+
+## 52. [리팩토링] mapMutations 적용
+
+`TodoList.vue`
+
+```vue
+<script>
+// import {mapGetters} from 'vuex';
+// import {mapMutations} from 'vuex';
+import {mapGetters,mapMutations} from 'vuex';
+
+export default {
+  // props: ['propsdata'],
+  methods: {
+    ...mapMutations({
+      removeTodo:'removeOneItem',
+      toggleComplete:'toggleOneItem'
+    }),
+    // removeTodo(todoItem, index) {
+    //   // this.$emit('removeItem', todoItem, index);
+    //   const obj = {todoItem,index};
+    //   this.$store.commit('removeOneItem',obj);
+    // },
+    // toggleComplete(todoItem, index) {
+    //   // this.$emit('toggleItem', todoItem, index); 
+    //   this.$store.commit('toggleOneItem',{todoItem,index});
+    // }
+  },
+  computed:{
+    // todoItems(){
+    //   return this.$store.getters.storedTodoItems;
+    // }
+    ...mapGetters(['storedTodoItems'])
+  }
+}
+</script>
+```
+
+`TodoFooter.vue`
+
+```vue
+<script>
+import {mapMutations} from 'vuex';
+
+export default {
+  methods: {
+    ...mapMutations({
+      clearTodo:'clearAllItems'
+    }),
+    // clearTodo() {
+    //   // this.$emit('clearAll');
+    //   this.$store.commit('clearAllItems');
+    // }
+  }
+}
+</script>
+```
+
+## 53. 헬퍼 함수가 주는 간편함
+
+`demoStore.js`
+
+```Js
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+Vue.use(Vuex);
+
+export const store=new Vuex.Store({
+    state:{
+        price : 10
+    },
+    getters:{
+        originalPrice(state){
+            return state.price;
+        },
+        doublePrice(state){
+            return state.price*2;
+        },
+        triplePrice(state){
+            return state.price*3;
+        }
+    }
+})
+```
+
+`demo.vue`
+
+```vue
+<template>
+    <div class="root">
+        <p>{{originalPrice}}</p>
+        <p>{{doublePrice}}</p>
+        <p>{{triplePrice}}</p>
+    </div>
+</template>
+
+<script>
+import {mapGetters} from 'vuex';
+
+export default {
+    computed:{
+        ...mapGetters(['originalPrice','doublePrice','triplePrice']),
+        // originalPrice(){
+        //     return this.$store.getters.originalPrice;
+        // },
+        // doublePrice(){
+        //     return this.$store.getters.doublePrice;
+        // },
+        // triplePrice(){ 
+        //     return this.$store.getters.triplePrice;
+        // }
+    }
+}
+</script>
+
+<style>
+
+</style>
+
+```
+
+- Store.js에 있는 함수들을 쥰내 직관적으로 vue에 적용시킬 수 있다는 점이 장점이다.
+
+
+- 깃에서 체크아웃 안되면 무시하고 넘어가는 방법. 뒤에 `-f`를 붙여준다.
+
+## 54. 스토어 속성 모듈화 방법
+
+- 스토어의 메서드가 점점 많아지면서 이것또한 찢어놓아야한다.
+
+### 프로젝트 구조화와 모듈화 방법 1
+
+```Js
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+Vue.use(Vuex);
+
+export const store=new Vuex.Store({
+    state:{},
+    getters:{},
+  	mutations:{},
+  	actions:{}
+});
+```
+
+```Js
+import Vue from 'vue';
+import Vuex from 'vuex';
+import * as getters from 'store/getters.js'
+import * as mutations from 'store/mutations.js'
+import * as actions from 'store/actions.js'
+
+Vue.use(Vuex);
+
+export const store=new Vuex.Store({
+    state:{},
+    getters:getters,
+  	mutations:mutations,
+  	actions:actions
+});
+```
+
+- 적용해보기
+
+```js
+import Vue from 'vue';
+import Vuex from 'vuex';
+import * as getters from './getters';
+import * as mutations from './mutations';
+
+Vue.use(Vuex);
+
+const storage = {
+    fetch(){
+        const arr = []; 
+        if (localStorage.length > 0) {
+            for (let i = 0; i < localStorage.length; i++) {
+                if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
+                    arr.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
+                }
+            }
+        }
+        return arr;
+    }
+}
+
+export const store = new Vuex.Store({
+    state:{
+        todoItems:storage.fetch(),
+        headerTitle:'Todo it!'
+    },
+    // 추가
+    getters,
+    mutations
+});
+```
+
+`getters.js`
+
+```js
+export const storedTodoItems = (state) =>{
+    return state.todoItems;
+}
+```
+
+`mutations.js`
+
+```js
+const addOneItem = (state,todoItem) => {
+    const obj = {completed: false, item: todoItem};
+    localStorage.setItem(todoItem, JSON.stringify(obj));
+    state.todoItems.push(obj);
+}
+const removeOneItem = (state,payload) => {
+    localStorage.removeItem(payload.todoItem.item);
+    state.todoItems.splice(payload.index, 1);
+}
+const toggleOneItem = (state,payload) => {
+    state.todoItems[payload.index].completed = !state.todoItems[payload.index].completed;
+    localStorage.removeItem(payload.todoItem.item);
+    localStorage.setItem(payload.todoItem.item, JSON.stringify(payload.todoItem));
+}
+const clearAllItems = (state,todoItem) => {
+    state.todoItems = [];
+    localStorage.clear();
+}
+
+export {addOneItem,removeItem,toggleOneItem,clearAllItems}
+```
+
+### 모듈화 방법 2
+
+- `modules`속성 사용
+
+```js
+//store.js
+import todo from 'modules/todo.js'
+
+export const store=new Vuex.Store({
+  modules:{
+    moduleA:todo,	// 모듈 명칭 : 모듈 파일 명
+    todo // todo:todo
+  }
+});
+//todo.js
+const state={}
+const getters={}
+const mutations={}
+const actions={}
+```
+
+- 적용하기
+
+`store.js`
+
+```js
+import Vue from 'vue';
+import Vuex from 'vuex';
+import todoApp from './modules/todoApp';
+
+Vue.use(Vuex);
+
+export const store = new Vuex.Store({
+    modules:{
+        todoApp
+    }
+});
+```
+
+`modules/todoApp`
+
+```js
+const storage = {
+    fetch(){
+        const arr = []; 
+        if (localStorage.length > 0) {
+            for (let i = 0; i < localStorage.length; i++) {
+                if (localStorage.key(i) !== 'loglevel:webpack-dev-server') {
+                    arr.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
+                }
+            }
+        }
+        return arr;
+    }
+};
+const state = {
+    todoItems:storage.fetch()
+};
+const getters = {
+    storedTodoItems(state){
+        return state.todoItems;
+    }
+};
+const mutations = {
+    addOneItem(state,todoItem) {
+        const obj = {completed: false, item: todoItem};
+        localStorage.setItem(todoItem, JSON.stringify(obj));
+        state.todoItems.push(obj);
+    },
+    removeOneItem(state,payload){
+        localStorage.removeItem(payload.todoItem.item);
+        state.todoItems.splice(payload.index, 1);
+    },
+    toggleOneItem(state,payload){
+        state.todoItems[payload.index].completed = !state.todoItems[payload.index].completed;
+        localStorage.removeItem(payload.todoItem.item);
+        localStorage.setItem(payload.todoItem.item, JSON.stringify(payload.todoItem));
+    },
+    clearAllItems(state,todoItem){
+        state.todoItems = [];
+        localStorage.clear();
+    }
+    
+};
+export default{
+    state,
+    getters,
+    mutations
+}
+```
+
